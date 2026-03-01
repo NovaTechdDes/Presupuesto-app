@@ -3,6 +3,7 @@ import * as Sharing from "expo-sharing";
 import ModalLoading from "@/components/ModalLoading";
 import { generarPdf } from "@/helpers/generarPdf";
 import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
@@ -64,7 +65,10 @@ const Index = () => {
     const res = await generarPdf({ name, items, total });
     setLoading(false);
     if (!res) return;
-    await Sharing.shareAsync(res);
+    await Sharing.shareAsync(res, {
+      mimeType: "application/pdf",
+      dialogTitle: "Enviar presupuesto",
+    });
   };
 
   return (
@@ -90,13 +94,16 @@ const Index = () => {
                     Generador de Ficha Técnica
                   </Text>
                 </View>
-                <View style={styles.headerIconContainer}>
-                  <Ionicons
-                    name="receipt-outline"
-                    size={24}
-                    color={COLORS.primary}
-                  />
-                </View>
+
+                <Link href="/configuration" asChild>
+                  <Pressable style={styles.headerIconContainer}>
+                    <Ionicons
+                      name="construct-outline"
+                      size={24}
+                      color={COLORS.primary}
+                    />
+                  </Pressable>
+                </Link>
               </View>
 
               {/* Client Data Section */}
@@ -157,7 +164,7 @@ const Index = () => {
                       </Text>
                     </View>
                   ) : (
-                    items.map((elem, idx) => (
+                    items.reverse().map((elem, idx) => (
                       <View key={`${elem}-${idx}`} style={styles.itemRow}>
                         <View style={styles.itemDot} />
                         <Text style={styles.itemText}>{elem}</Text>
@@ -257,6 +264,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: COLORS.border,
+  },
+  headerIcon: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   section: {
     marginBottom: 28,

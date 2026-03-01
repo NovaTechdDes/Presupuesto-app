@@ -1,5 +1,6 @@
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
+import { obtenerDatos } from "./obtenerDatos";
 
 interface BudgetData {
   name: string;
@@ -8,6 +9,8 @@ interface BudgetData {
 }
 
 export const generarPdf = async ({ name, items, total }: BudgetData) => {
+  const datos = await obtenerDatos();
+
   const html = `
     <!DOCTYPE html>
     <html lang="es">
@@ -41,14 +44,14 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
           align-items: center;
         }
         .logo-text {
-          color: #1E3A8A;
+          color: ${datos.selectedColor};
           font-weight: 800;
           font-size: 10px;
           margin-top: 4px;
           text-transform: uppercase;
         }
         h1 {
-          color: #1E3A8A;
+          color: ${datos.selectedColor};
           font-size: 38px;
           margin: 0;
           font-weight: 900;
@@ -79,7 +82,7 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
         .item::before {
           content: "•";
           margin-right: 10px;
-          color: #1E3A8A;
+          color: ${datos.selectedColor};
         }
         .labor-cost {
           text-align: center;
@@ -98,7 +101,7 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
           bottom: 0;
           left: 0;
           right: 0;
-          background-color: #1E3A8A;
+          background-color: ${datos.selectedColor};
           color: white;
           padding: 20px;
           display: flex;
@@ -122,7 +125,7 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
               <rect x="11" y="12" width="2" height="8" fill="#1E3A8A"/>
               <path d="M7 6H17" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <div class="logo-text">DIEGO OJEDA<br>Pintor</div>
+            <div class="logo-text">${datos.nombre}<br>Pintor</div>
           </div>
           <h1>PRESUPUESTO</h1>
         </div>
@@ -139,10 +142,10 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
 
         <div class="footer">
           <div class="footer-item">
-            <span>📞 (3456) 15-406986</span>
+            <span>📞 ${datos.telefono}</span>
           </div>
           <div class="footer-item">
-            <span>📍 Almirante Brown 2130</span>
+            <span>📍 ${datos.direccion}</span>
           </div>
         </div>
       </div>

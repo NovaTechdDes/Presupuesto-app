@@ -7,7 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { Slot } from "expo-router";
+import { Stack } from "expo-router";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -18,7 +18,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Slot />
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="configuration" options={{ headerShown: false }} />
+      </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
