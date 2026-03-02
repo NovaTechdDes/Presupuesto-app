@@ -1,5 +1,5 @@
 import { Asset } from "expo-asset";
-import { File } from "expo-file-system";
+import { File, Paths } from "expo-file-system";
 
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
@@ -20,11 +20,20 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
     const asset = Asset.fromModule(require("../assets/images/Logo.png"));
     await asset.downloadAsync();
 
-    if (asset.localUri) {
-      const file = new File(asset.localUri);
-      const logoDataUri = await file.base64();
+    const uri = asset.localUri || asset.uri;
 
-      logoBase64 = `data:image/png;base64,${logoDataUri}`;
+    if (uri) {
+      if (uri.startsWith("http")) {
+        // En producción o con actualizaciones OTA, puede ser una URL remota
+        const downloadedFile = await File.downloadFileAsync(uri, Paths.cache);
+        const base64Data = await downloadedFile.base64();
+        logoBase64 = `data:image/png;base64,${base64Data}`;
+      } else {
+        // Es un archivo local
+        const file = new File(uri);
+        const base64Data = await file.base64();
+        logoBase64 = `data:image/png;base64,${base64Data}`;
+      }
     }
   } catch (error) {
     console.error("Error cargando el logo:", error);
