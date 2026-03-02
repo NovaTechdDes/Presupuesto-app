@@ -142,6 +142,9 @@ const Index = () => {
                       value={item}
                       onChangeText={setItem}
                       placeholderTextColor={COLORS.muted}
+                      returnKeyType="done"
+                      blurOnSubmit={false}
+                      onSubmitEditing={() => handleAddItem()}
                     />
                   </View>
                   <Pressable

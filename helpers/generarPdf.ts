@@ -44,14 +44,14 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
           align-items: center;
         }
         .logo-text {
-          color: ${datos.selectedColor};
+          color:${datos?.selectedColor ?? "#1E3A8A"};
           font-weight: 800;
-          font-size: 10px;
+          font-size: 26px;
           margin-top: 4px;
           text-transform: uppercase;
         }
         h1 {
-          color: ${datos.selectedColor};
+          color:${datos?.selectedColor ?? "#1E3A8A"};
           font-size: 38px;
           margin: 0;
           font-weight: 900;
@@ -73,7 +73,7 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
           margin-bottom: 40px;
         }
         .item {
-          font-size: 18px;
+          font-size: 36px;
           margin-bottom: 12px;
           color: #475569;
           text-align: center;
@@ -82,7 +82,7 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
         .item::before {
           content: "•";
           margin-right: 10px;
-          color: ${datos.selectedColor};
+          color:${datos?.selectedColor ?? "#1E3A8A"};
         }
         .labor-cost {
           text-align: center;
@@ -101,18 +101,19 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
           bottom: 0;
           left: 0;
           right: 0;
-          background-color: ${datos.selectedColor};
+          background-color: ${datos?.selectedColor ?? "#1E3A8A"};
           color: white;
           padding: 20px;
           display: flex;
           justify-content: space-around;
-          font-size: 12px;
+          font-size: 20px;
           margin-top: 20px;
         }
         .footer-item {
           display: flex;
           align-items: center;
           gap: 8px;
+          font-size: 30px;
         }
       </style>
     </head>
@@ -120,12 +121,8 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
       <div class="container">
         <div class="header">
           <div class="logo-container">
-            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="4" width="16" height="8" rx="2" fill="#1E3A8A"/>
-              <rect x="11" y="12" width="2" height="8" fill="#1E3A8A"/>
-              <path d="M7 6H17" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <div class="logo-text">${datos.nombre}<br>Pintor</div>
+            <img src="/assets/images/Logo.png" alt="Logo">
+            <div class="logo-text">${datos?.nombre ?? ""}<br>Pintor</div>
           </div>
           <h1>PRESUPUESTO</h1>
         </div>
@@ -142,10 +139,10 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
 
         <div class="footer">
           <div class="footer-item">
-            <span>📞 ${datos.telefono}</span>
+            <span>📞 ${datos?.telefono ?? ""}</span>
           </div>
           <div class="footer-item">
-            <span>📍 ${datos.direccion}</span>
+            <span>📍 ${datos?.direccion ?? ""}</span>
           </div>
         </div>
       </div>
