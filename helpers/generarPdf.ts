@@ -1,3 +1,6 @@
+import { Asset } from "expo-asset";
+import { File } from "expo-file-system";
+
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { obtenerDatos } from "./obtenerDatos";
@@ -10,6 +13,22 @@ interface BudgetData {
 
 export const generarPdf = async ({ name, items, total }: BudgetData) => {
   const datos = await obtenerDatos();
+
+  // Cargar y convertir el logo a base64
+  let logoBase64 = "";
+  try {
+    const asset = Asset.fromModule(require("../assets/images/Logo.png"));
+    await asset.downloadAsync();
+
+    if (asset.localUri) {
+      const file = new File(asset.localUri);
+      const logoDataUri = await file.base64();
+
+      logoBase64 = `data:image/png;base64,${logoDataUri}`;
+    }
+  } catch (error) {
+    console.error("Error cargando el logo:", error);
+  }
 
   const html = `
     <!DOCTYPE html>
@@ -121,8 +140,8 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
       <div class="container">
         <div class="header">
           <div class="logo-container">
-            <img src="/assets/images/Logo.png" alt="Logo">
-            <div class="logo-text">${datos?.nombre ?? ""}<br>Pintor</div>
+            <img src="${logoBase64}" alt="Logo" style="width: 200px; height: auto;">
+            <div class="logo-text">${datos?.nombre ?? ""}<br>${datos?.profesion ?? ""}</div>
           </div>
           <h1>PRESUPUESTO</h1>
         </div>

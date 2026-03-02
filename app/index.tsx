@@ -2,6 +2,7 @@ import * as Sharing from "expo-sharing";
 
 import ModalLoading from "@/components/ModalLoading";
 import { generarPdf } from "@/helpers/generarPdf";
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -71,10 +72,16 @@ const Index = () => {
     });
   };
 
+  const color = useColorScheme();
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.safeArea}>
-        <StatusBar style="dark" />
+        <StatusBar
+          style={color === "light" ? "dark" : "light"}
+          backgroundColor={color === "dark" ? "white" : "black"}
+          translucent={false}
+        />
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -243,7 +250,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 22,
     marginTop: 10,
   },
   headerTitle: {
@@ -274,13 +281,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   section: {
-    marginBottom: 28,
+    marginBottom: 12,
   },
   sectionLabel: {
     fontSize: 12,
     fontWeight: "700",
     color: COLORS.muted,
-    marginBottom: 12,
+    marginBottom: 8,
     letterSpacing: 1,
   },
   inputContainer: {
