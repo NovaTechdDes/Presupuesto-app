@@ -1,6 +1,5 @@
 import { Asset } from "expo-asset";
-import { File, Paths } from "expo-file-system";
-
+import { File as FSFile, Paths as FSPaths } from "expo-file-system";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { obtenerDatos } from "./obtenerDatos";
@@ -11,33 +10,38 @@ interface BudgetData {
   total: string;
 }
 
-export const generarPdf = async ({ name, items, total }: BudgetData) => {
-  const datos = await obtenerDatos();
-
-  // Cargar y convertir el logo a base64
-  let logoBase64 = "";
+const getLogoBase64 = async (): Promise<string> => {
   try {
     const asset = Asset.fromModule(require("../assets/images/Logo.png"));
     await asset.downloadAsync();
 
-    const uri = asset.localUri || asset.uri;
+    const uri = asset.localUri ?? asset.uri;
+    if (!uri) return "";
 
-    if (uri) {
-      if (uri.startsWith("http")) {
-        // En producción o con actualizaciones OTA, puede ser una URL remota
-        const downloadedFile = await File.downloadFileAsync(uri, Paths.cache);
-        const base64Data = await downloadedFile.base64();
-        logoBase64 = `data:image/png;base64,${base64Data}`;
-      } else {
-        // Es un archivo local
-        const file = new File(uri);
-        const base64Data = await file.base64();
-        logoBase64 = `data:image/png;base64,${base64Data}`;
-      }
+    let file: FSFile;
+
+    if (uri.startsWith("http://") || uri.startsWith("https://")) {
+      // En producción: descargar desde URL remota al cache
+      file = (await FSFile.downloadFileAsync(uri, FSPaths.cache)) as any;
+      console.log(file);
+    } else {
+      // En desarrollo: ya es un archivo local
+      file = new FSFile(uri);
     }
+
+    const base64 = await file.base64();
+    return `data:image/png;base64,${base64}`;
   } catch (error) {
     console.error("Error cargando el logo:", error);
+    return "";
   }
+};
+
+export const generarPdf = async ({ name, items, total }: BudgetData) => {
+  const [datos, logoBase64] = await Promise.all([
+    obtenerDatos(),
+    getLogoBase64(),
+  ]);
 
   const html = `
     <!DOCTYPE html>
@@ -181,7 +185,5 @@ export const generarPdf = async ({ name, items, total }: BudgetData) => {
   const { uri } = await Print.printToFileAsync({ html });
   const disponible = await Sharing.isAvailableAsync();
 
-  if (disponible) {
-    return uri;
-  }
+  if (disponible) return uri;
 };

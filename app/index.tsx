@@ -64,6 +64,7 @@ const Index = () => {
   const handleGenerarPdf = async () => {
     setLoading(true);
     const res = await generarPdf({ name, items, total });
+    console.log(res);
     setLoading(false);
     if (!res) return;
     await Sharing.shareAsync(res, {
@@ -96,7 +97,7 @@ const Index = () => {
               {/* Header */}
               <View style={styles.header}>
                 <View>
-                  <Text style={styles.headerTitle}>Presupuesto</Text>
+                  <Text style={styles.headerTitle}>Presupuestos</Text>
                   <Text style={styles.headerSubtitle}>
                     Generador de Ficha Técnica
                   </Text>
